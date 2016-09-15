@@ -18,6 +18,9 @@ $ brew install pyqt --with-python3
     /Users/boyuan/Library/Python/3.5/lib/python/site-packages/homebrew.pth
 
 # To install PyQt4 on Linux
+  $ sudo apt-get install python-qt4
 
-$ sudo apt-get install python-qt4
+# or
+  $ sudo pip install python-qt4
+  
 # You can also get a wheel file for pip installation at: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4
