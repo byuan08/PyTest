@@ -1,0 +1,24 @@
+Pdb Commands
+
+python-mpdb<name>.py[args] #begin the debugger
+help [command] #view a list of commands, or view help for a specific command
+within a python file:
+importpdb
+...
+pdb.set_trace() #begin the debugger at this line when the file is run normally
+
+l(ist) #list 11 lines surrounding the current line
+w(here) #display the file and line number of the current line
+n(ext) #execute the current line
+s(tep) #step into functions called at the current line
+r(eturn) #execute until the current function’s return is encountered
+
+b[#] #create a breakpoint at line [#]
+b #list breakpoints and their indices
+c(ontinue) #execute until a breakpoint is encountered
+clear[#] #clear breakpoint of index [#]
+
+p<name> #print value of the variable <name>
+!<expr> #execute the expression <expr> NOTE: this acts just like a python interpreter
+run[args] #restart the debugger with sys.argv arguments [args]
+q(uit) #exit the debugger
