@@ -19,7 +19,6 @@ class Window(QtGui.QMainWindow):
 		self.create_comboBox()
 		self.show()
 
-
 	def create_app_window(self):	
 		# Use super so we return parent object of this class
 		super(Window, self).__init__()
@@ -58,15 +57,23 @@ class Window(QtGui.QMainWindow):
 		btn.resize(btn.minimumSizeHint())
 		btn.move(100, 100)
 
-	def create_tool_bar(self):
+	def create_toolbar_exit_action(self):
 	    # create tool bar button
-		tbExitButton = QtGui.QAction(QtGui.QIcon('exit.png'), 'Flee the scene', self)
-		tbExitButton.triggered.connect(self.close_application)
-		# create tool bar
-		self.toolBar = self.addToolBar("Extraction")
-		self.toolBar.addAction(tbExitButton)
+		tbExitAction = QtGui.QAction(QtGui.QIcon('exit.png'), 'Flee the scene', self)
+		tbExitAction.triggered.connect(self.close_application)
+		# add tool buttons in
+		self.toolBar.addAction(tbExitAction)
 
-		
+	def create_toolbar_font_dialog_action(self):
+		tbFontDialogAction = QtGui.QAction(QtGui.QIcon('exit24.png'), 'Font', self)
+		tbFontDialogAction.triggered.connect(self.font_dialog)
+		self.toolBar.addAction(tbFontDialogAction)
+
+	def create_tool_bar(self):
+		self.toolBar = self.addToolBar("Extraction")
+		pdb.set_trace()
+		self.create_toolbar_exit_action()
+		self.create_toolbar_font_dialog_action()
 
 	def create_checkbox(self):
 		'create and configure a checkbox object'
@@ -95,7 +102,6 @@ class Window(QtGui.QMainWindow):
 		self.progress = QtGui.QProgressBar(self)
 		self.progress.setGeometry(100, 80, 250, 20)
 
-
 	def create_style_choice_label(self):
 		self.styleChoice = QtGui.QLabel("Mac", self)
 		self.styleChoice.move(50,150)
@@ -111,11 +117,14 @@ class Window(QtGui.QMainWindow):
 		comboBox.move(50, 250)
 
 		comboBox.activated[str].connect(self.style_choice)
+	def font_dialog(self):
+		font,valid = QtGui.QFontDialog.getFont()
+		if valid:
+			self.styleChoice.setFont(font)
 
 	def style_choice(self, text):
 		self.styleChoice.setText(text)
 		QtGui.QApplication.setStyle(QtGui.QStyleFactory.create(text))
-
 
 	def enlarge_window(self, state):
 
@@ -124,7 +133,6 @@ class Window(QtGui.QMainWindow):
 			self.setGeometry(50, 50, 1000, 600)
 		else:
 			self.setGeometry(50, 50, 500, 300)
-
 
 	def close_application(self):
 		
@@ -138,7 +146,6 @@ class Window(QtGui.QMainWindow):
 		else:
 			pass
 
-		
 
 def run():
 	app = QtGui.QApplication(sys.argv)
@@ -148,5 +155,3 @@ def run():
 
 if __name__ == "__main__":
 	run()
-
-
