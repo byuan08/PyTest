@@ -17,35 +17,71 @@ class Window(QtGui.QMainWindow):
 		self.create_progress_bar()
 		self.create_style_choice_label()
 		self.create_comboBox()
+		self.create_calendar()
 		self.show()
 
 	def create_app_window(self):	
 		# Use super so we return parent object of this class
 		super(Window, self).__init__()
-		self.setGeometry(50, 50, 500, 300)
+		self.setGeometry(50, 50, 1000, 600)
 		self.setWindowTitle("Qt Application")
 		self.setWindowIcon(QtGui.QIcon('pythonlogo.png'))
 
 	def create_menubar(self):	
-		# Create mainMenu for application
-		mainMenu = self.menuBar()
-		mainMenu.setNativeMenuBar(False)
+		'''Create mainMenu for application'''
+		self.mainMenu = self.menuBar()
+		self.mainMenu.setNativeMenuBar(False)
 
-		# Create file menu and add to main menu
-		fileMenu = mainMenu.addMenu('File')
+		self.create_mainmenu_exit_action()
+		self.create_mainmenu_open_editor()
+		self.create_mainmenu_open_file()
+		self.create_mainmenu_save_file()
 
-		# Create exit action for file menu
-		mbExitButton = QtGui.QAction(QtGui.QIcon('exit24.png'), 'Exit', self)
+	def create_mainmenu_exit_action(self):
+		'''Create exit action for file menu'''
+
+		mbExitButton = QtGui.QAction(QtGui.QIcon('exit.png'), 'Exit', self)
 		mbExitButton.setShortcut('Ctrl+Q')
 		mbExitButton.setStatusTip('Quit Application')
 		mbExitButton.triggered.connect(self.close_application)
 
-		# exit aciton to file menu
-		fileMenu.addAction(mbExitButton)
-
-		# 
-		self.statusBar()
+		# Create file menu and add to main menu
+		self.fileMenu = self.mainMenu.addMenu('File')
 		
+		# add exit aciton to file menu
+		self.fileMenu.addAction(mbExitButton)
+
+	def create_mainmenu_open_editor(self):
+		'''create editor action for opening editor'''
+		mbOpenEditor = QtGui.QAction(QtGui.QIcon(), '&Editor', self)
+		mbOpenEditor.setShortcut('Ctrl+E')
+		mbOpenEditor.setStatusTip('Open Editor')
+		mbOpenEditor.triggered.connect(self.open_editor)
+
+		# create editor menu and add to main menu
+		self.editorMenu = self.mainMenu.addMenu('Editor')
+
+		# add editor action to editor menu
+		self.editorMenu.addAction(mbOpenEditor)
+
+	def create_mainmenu_open_file(self):
+		'''create open file action'''
+		mbOpenFile = QtGui.QAction(QtGui.QIcon(), 'Open File', self)
+		mbOpenFile.setShortcut('Ctrl+O')
+		mbOpenFile.setStatusTip('Open File')
+		mbOpenFile.triggered.connect(self.open_file)
+
+		self.fileMenu.addAction(mbOpenFile)
+
+	def create_mainmenu_save_file(self):
+		'''create an action for saving files'''
+		mbSaveFile = QtGui.QAction(QtGui.QIcon(''), '&Save File', self)
+		mbSaveFile.setStatusTip('Save file to disk')
+		mbSaveFile.setShortcut('Ctrl+S')
+		mbSaveFile.triggered.connect(self.save_file)
+
+		self.fileMenu.addAction(mbSaveFile)
+
 	def create_quitbutton(self):
 		btn = QtGui.QPushButton("Quit", self)
 		btn.setToolTip('Click to quit')
@@ -58,22 +94,27 @@ class Window(QtGui.QMainWindow):
 		btn.move(100, 100)
 
 	def create_toolbar_exit_action(self):
-	    # create tool bar button
+		'''create tool bar button'''
 		tbExitAction = QtGui.QAction(QtGui.QIcon('exit.png'), 'Flee the scene', self)
 		tbExitAction.triggered.connect(self.close_application)
 		# add tool buttons in
 		self.toolBar.addAction(tbExitAction)
 
 	def create_toolbar_font_dialog_action(self):
-		tbFontDialogAction = QtGui.QAction(QtGui.QIcon('exit24.png'), 'Font', self)
+		tbFontDialogAction = QtGui.QAction(QtGui.QIcon('font.png'), 'Font', self)
 		tbFontDialogAction.triggered.connect(self.font_dialog)
 		self.toolBar.addAction(tbFontDialogAction)
 
+	def create_toolbar_fontcolor_dialog_action(self):
+		fontColorAction = QtGui.QAction(QtGui.QIcon('color.png'), 'Font bg Color', self)
+		fontColorAction.triggered.connect(self.color_picker)
+		self.toolBar.addAction(fontColorAction)
+
 	def create_tool_bar(self):
 		self.toolBar = self.addToolBar("Extraction")
-		pdb.set_trace()
 		self.create_toolbar_exit_action()
 		self.create_toolbar_font_dialog_action()
+		self.create_toolbar_fontcolor_dialog_action()		
 
 	def create_checkbox(self):
 		'create and configure a checkbox object'
@@ -117,14 +158,43 @@ class Window(QtGui.QMainWindow):
 		comboBox.move(50, 250)
 
 		comboBox.activated[str].connect(self.style_choice)
+
+	def open_file(self):
+		name = QtGui.QFileDialog.getOpenFileName(self, 'Open File')
+		file = open(name, 'r')
+		self.open_editor()
+		with file:
+			text = file.read()
+			self.textEdit.setText(text)
+
+	def open_editor(self):
+		self.textEdit = QtGui.QTextEdit()
+		self.setCentralWidget(self.textEdit)
+
+	def save_file(self):
+		name = QtGui.QFileDialog.getSaveFileName(self, 'Save File')
+		file = open(name, 'w')
+		text = self.textEdit.toPlainText()
+		file.write(text)
+		file.close()
+
 	def font_dialog(self):
 		font,valid = QtGui.QFontDialog.getFont()
 		if valid:
 			self.styleChoice.setFont(font)
 
+	def color_picker(self):
+		color = QtGui.QColorDialog.getColor()
+		self.styleChoice.setStyleSheet("QWidget{background-color: $s" % color.name())
+
 	def style_choice(self, text):
 		self.styleChoice.setText(text)
 		QtGui.QApplication.setStyle(QtGui.QStyleFactory.create(text))
+
+	def create_calendar(self):
+		cal = QtGui.QCalendarWidget(self)
+		cal.move(500,200)
+		cal.resize(200, 200)
 
 	def enlarge_window(self, state):
 
