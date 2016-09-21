@@ -41,7 +41,7 @@ class MyTkinterApplication(tk.Tk):
 		self.frames = {}
 
 		# instantiate objecs with for loop		
-		for F in (StartPage, PageOne, PageTwo, PageThree):
+		for F in (StartPage, PlotPage):
 			frame = F(container, self)
 
 			# add each frame to self.frames dictionary
@@ -73,14 +73,14 @@ class StartPage(tk.Frame):
 		# padding on x and y to add empty space on the edge of things to look not cluttered
 		label.pack(pady=10,padx=10)
 
-		button = ttk.Button(self, text='Visit Page1', command=lambda: controller.show_frame(PageOne))
+		button = ttk.Button(self, text='Agree', command=lambda: controller.show_frame(PlotPage))
 		button.pack()
 
-		button2 = ttk.Button(self, text='Visite Page2', command=lambda: controller.show_frame(PageTwo))
+		button2 = ttk.Button(self, text='Disagree', command=quit)
 		button2.pack()
 
-		button3 = tk.Button(self, text='Visit Page3', command=lambda:controller.show_frame(PageThree))
-		button3.pack()
+		# button3 = tk.Button(self, text='Visit Page3', command=lambda:controller.show_frame(PageThree))
+		# button3.pack()
 
 class PageOne(tk.Frame):
 	''' Page one'''
