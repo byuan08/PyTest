@@ -7,12 +7,16 @@ from matplotlib.figure import Figure
 import matplotlib.animation as animation
 from matplotlib import style
 style.use('ggplot')
+import urllib
+import json
+import pandas as pd
+import numpy as np
 
 LARGE_FONT = ('Verdana', 12)
 
 f = Figure(figsize=(5,4), dpi=100)
 a = f.add_subplot(111)
-def animate(i):
+def animate_static(i):
     pullData = open('sampleText.txt','r').read()
     dataArray = pullData.split('\n')
     xar=[]
@@ -24,6 +28,31 @@ def animate(i):
             yar.append(int(y))
     a.clear()
     a.plot(xar,yar)
+
+def animate(i):
+	dataLink = 'https://btc-e.com/api/3/trades/btc_usd?limit=2000'
+	data = urllib.request.urlopen(dataLink)
+	data = data.readall().decode("utf-8")
+	data = json.loads(data)
+
+
+	data = data["btc_usd"]
+	data = pd.DataFrame(data)
+
+	buys = data[(data['type']=="bid")]
+	buys["datestamp"] = np.array(buys["timestamp"]).astype("datetime64[s]")
+	buyDates = (buys["datestamp"]).tolist()
+
+
+	sells = data[(data['type']=="ask")]
+	sells["datestamp"] = np.array(sells["timestamp"]).astype("datetime64[s]")
+	sellDates = (sells["datestamp"]).tolist()
+
+	a.clear()
+
+	a.plot_date(buyDates, buys["price"])
+	a.plot_date(sellDates, sells["price"])
+
 
 class MyTkinterApplication(tk.Tk):
 	def __init__(self, *args, **kwargs):
@@ -111,7 +140,7 @@ class PageTwo(tk.Frame):
 		button2 = tk.Button(self, text = 'Visit Page Two', command=lambda:controller.show_frame(PageTwo))
 		button2.pack()
 
-class PageThree(tk.Frame):
+class PlotPage(tk.Frame):
 
 	def __init__(self, parent, controller):
 
