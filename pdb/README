@@ -13,12 +13,12 @@ n(ext) #execute the current line
 s(tep) #step into functions called at the current line
 r(eturn) #execute until the current function’s return is encountered
 
-b[#] #create a breakpoint at line [#]
+b [#] #create a breakpoint at line [#]
 b #list breakpoints and their indices
 c(ontinue) #execute until a breakpoint is encountered
 clear[#] #clear breakpoint of index [#]
 
-p<name> #print value of the variable <name>
+p <name> #print value of the variable <name>
 !<expr> #execute the expression <expr> NOTE: this acts just like a python interpreter
-run[args] #restart the debugger with sys.argv arguments [args]
+run [args] #restart the debugger with sys.argv arguments [args]
 q(uit) #exit the debugger
