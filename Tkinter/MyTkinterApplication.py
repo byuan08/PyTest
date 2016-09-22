@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+#-------------------------------------------------------------------
 import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
@@ -7,15 +8,22 @@ from matplotlib.figure import Figure
 import matplotlib.animation as animation
 from matplotlib import style
 style.use('ggplot')
-import urllib
-import json
+from matplotlib import pyplot as plt
+#--------------------------------------------------------------------
+import urllib, json, pdb
 import pandas as pd
 import numpy as np
+#--------------------------------------------------------------------
 
-LARGE_FONT = ('Verdana', 12)
+LARGE_FONT= ("Verdana", 12)
+NORM_FONT = ("Helvetica", 10)
+SMALL_FONT = ("Helvetica", 8)
+
+
 
 f = Figure(figsize=(5,4), dpi=100)
 a = f.add_subplot(111)
+
 def animate_static(i):
     pullData = open('sampleText.txt','r').read()
     dataArray = pullData.split('\n')
@@ -29,12 +37,25 @@ def animate_static(i):
     a.clear()
     a.plot(xar,yar)
 
+def popupmsg(msg):
+	popup = tk.Tk()
+	popup.wm_title("!")
+	label = ttk.Label(popup, text=msg, font=NORM_FONT)
+	label.pack(side="top", fill="x", pady=10)
+	B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
+	B1.pack()
+	popup.mainloop()
+    
+
 def animate(i):
+
+	#pdb.set_trace()
 	dataLink = 'https://btc-e.com/api/3/trades/btc_usd?limit=2000'
 	data = urllib.request.urlopen(dataLink)
-	data = data.readall().decode("utf-8")
+	data = data.read().decode("utf-8")
 	data = json.loads(data)
 
+	#print('requesting data update')
 
 	data = data["btc_usd"]
 	data = pd.DataFrame(data)
@@ -50,9 +71,15 @@ def animate(i):
 
 	a.clear()
 
-	a.plot_date(buyDates, buys["price"])
-	a.plot_date(sellDates, sells["price"])
+	# a.plot_date(buyDates, buys["price"])
+	# a.plot_date(sellDates, sells["price"])
+	a.plot_date(buyDates, buys["price"], "#00A3E0", label="buys")
+	a.plot_date(sellDates, sells["price"], "#183A54", label="sells")
 
+	a.legend(bbox_to_anchor=(0, 1.02, 1, .102), loc=3,
+	         ncol=2, borderaxespad=0)
+	title = "BTC-e BTCUSD Prices\nLast Price: "+str(data["price"][1999])
+	a.set_title(title)
 
 class MyTkinterApplication(tk.Tk):
 	def __init__(self, *args, **kwargs):
@@ -65,6 +92,16 @@ class MyTkinterApplication(tk.Tk):
 		container.pack(side='top', fill='both', expand=True)
 		container.grid_rowconfigure(0,weight=1)
 		container.grid_columnconfigure(0,weight=1)
+
+
+		menubar = tk.Menu(container)
+		filemenu = tk.Menu(menubar, tearoff=0)
+		filemenu.add_command(label="Save settings", command = lambda: popupmsg("Not supported just yet!"))
+		filemenu.add_separator()
+		filemenu.add_command(label="Exit", command=quit)
+		menubar.add_cascade(label="File", menu=filemenu)
+
+		tk.Tk.config(self, menu=menubar)
 
 		# self.frame will be packed with a bunch of frames, with the 'top' frame being the current one
 		self.frames = {}
@@ -111,34 +148,6 @@ class StartPage(tk.Frame):
 		# button3 = tk.Button(self, text='Visit Page3', command=lambda:controller.show_frame(PageThree))
 		# button3.pack()
 
-class PageOne(tk.Frame):
-	''' Page one'''
-	def __init__(self, parent, controller):
-
-		tk.Frame.__init__(self, parent)
-		label = tk.Label(self, text='This is the first page', font=LARGE_FONT)
-
-		label.pack(pady=10, padx=10)
-		button = tk.Button(self,text='Visit Start Page', command=lambda: controller.show_frame(StartPage))
-		button.pack()
-
-		button2 = tk.Button(self,text = 'Visit Page Two', command=lambda:controller.show_frame(PageTwo))
-		button2.pack()
-
-class PageTwo(tk.Frame):
-	''' Page two'''
-	def __init__(self, parent, controller):
-
-		#tk.Frame.__init__(self, parent)
-		tk.Frame.__init__(self, parent)
-		label = tk.Label(self,text='This is the second page', font=LARGE_FONT)
-		label.pack()
-
-		button = tk.Button(self,text='Visit StartPage',command=lambda:controller.show_frame(StartPage))
-		button.pack()
-
-		button2 = tk.Button(self, text = 'Visit Page Two', command=lambda:controller.show_frame(PageTwo))
-		button2.pack()
 
 class PlotPage(tk.Frame):
 
@@ -172,9 +181,6 @@ class PlotPage(tk.Frame):
 
 if __name__ == '__main__':
 	app = MyTkinterApplication()
-	ani = animation.FuncAnimation(f, animate, interval=1000)
+	app.geometry("1280x720")
+	ani = animation.FuncAnimation(f, animate, interval=5000)
 	app.mainloop()
-
-
-
-
