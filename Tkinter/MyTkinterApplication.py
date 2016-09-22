@@ -19,7 +19,13 @@ LARGE_FONT= ("Verdana", 12)
 NORM_FONT = ("Helvetica", 10)
 SMALL_FONT = ("Helvetica", 8)
 
+exchange = "BTC-e"
+DatCounter = 9000
+programName = "btce"
 
+resampleSize = "15Min"
+DataPace = "1d"
+candleWidth = 0.008
 
 f = Figure(figsize=(5,4), dpi=100)
 a = f.add_subplot(111)
@@ -45,7 +51,37 @@ def popupmsg(msg):
 	B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
 	B1.pack()
 	popup.mainloop()
-    
+
+def changeTimeFrame(tf):
+    global DataPace
+    if tf == "7d" and resampleSize == "1Min":
+        popupmsg("Too much data chosen, choose a smaller time frame or higher OHLC interval")
+    else:
+        DataPace = tf
+        DatCounter = 9000
+
+def changeSampleSize(size,width):
+    global resampleSize
+    global candleWidth
+    if DataPace == "7d" and resampleSize == "1Min":
+        popupmsg("Too much data chosen, choose a smaller time frame or higher OHLC interval")
+
+    elif DataPace == "tick":
+        popupmsg("You're currently viewing tick data, not OHLC.")
+
+    else:
+        resampleSize = size
+        DatCounter = 9000
+        candleWidth = width
+
+def changeExchange(toWhat,pn):
+	global exchange
+	global DatCounter
+	global programName
+
+	exchange = toWhat
+	prgramName = pn
+	DatCounter = 9000
 
 def animate(i):
 
@@ -93,13 +129,38 @@ class MyTkinterApplication(tk.Tk):
 		container.grid_rowconfigure(0,weight=1)
 		container.grid_columnconfigure(0,weight=1)
 
-
 		menubar = tk.Menu(container)
 		filemenu = tk.Menu(menubar, tearoff=0)
 		filemenu.add_command(label="Save settings", command = lambda: popupmsg("Not supported just yet!"))
 		filemenu.add_separator()
 		filemenu.add_command(label="Exit", command=quit)
 		menubar.add_cascade(label="File", menu=filemenu)
+
+		exchangeChoice = tk.Menu(menubar,tearoff=1)
+		exchangeChoice.add_command(label="BTC-e", command=lambda:changeExchange('BTC-e', 'btce'))
+		exchangeChoice.add_command(label="Bitfinex", command=lambda: changeExchange('Bitfinex', 'bitfinex'))
+		exchangeChoice.add_command(label="Bitstamp", command=lambda: changeExchange('Bitstamp', 'bitstamp'))
+		exchangeChoice.add_command(label="Huobi", command=lambda: changeExchange('Huobi', 'huobi'))
+		exchangeChoice.add_separator()
+		menubar.add_cascade(label="Exchange",menu=exchangeChoice)
+
+		dataTF = tk.Menu(menubar, tearoff=1)
+		dataTF.add_command(label='Tick', command=lambda: changeTimeFrame('tick'))
+		dataTF.add_command(label='1 Day', command=lambda:changeTimeFrame('1d'))
+		dataTF.add_command(label='2 Day', command=lambda: changeTimeFrame('2d'))
+		dataTF.add_command(label='3 Day', command=lambda: changeTimeFrame('3d'))
+		dataTF.add_command(label='1 Week', command=lambda: changeTimeFrame('7d'))
+		menubar.add_cascade(label = 'Data Time Frame', menu = dataTF)
+
+		OHLCI = tk.Menu(menubar, tearoff=1)
+		OHLCI.add_command(label = "Tick",command=lambda: changeTimeFrame('tick'))
+		OHLCI.add_command(label = "1 minute", command=lambda: changeSampleSize('1Min', 0.0005))
+		OHLCI.add_command(label = "5 minute", command=lambda: changeSampleSize('5Min', 0.003))
+		OHLCI.add_command(label = "15 minute", command=lambda: changeSampleSize('15Min', 0.008))
+		OHLCI.add_command(label = "30 minute", command=lambda: changeSampleSize('30Min', 0.016))
+		OHLCI.add_command(label = "1 Hour", command=lambda: changeSampleSize('1H', 0.032))
+		OHLCI.add_command(label = "3 Hour", command=lambda: changeSampleSize('3H', 0.096))
+		menubar.add_cascade(label="OHLC Interval", menu=OHLCI)
 
 		tk.Tk.config(self, menu=menubar)
 
