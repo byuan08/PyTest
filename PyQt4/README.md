@@ -1,5 +1,5 @@
 Install pyqt on mac
-```shell
+```sh
   $ brew install pyqt --with-python3
   
 ```
