@@ -1,5 +1,9 @@
 # Install pyqt on mac
-$ brew install pyqt --with-python3
+'''
+
+brew install pyqt --with-python3
+
+'''
 # sip will be automatically installed as dependency
 #
 # Python modules have been installed and Homebrew's site-packages is not
