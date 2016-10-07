@@ -3,13 +3,7 @@ Install pyqt on mac
   $ brew install pyqt --with-python3
   
 ```
-```javascript
-function fancyAlert(arg) {
-  if(arg) {
-    $.facebox({div:'#foo'})
-  }
-}
-```
+
 sip will be automatically installed as dependency
 
 Python modules have been installed and Homebrew's site-packages is not
