@@ -20,7 +20,7 @@ echo 'import site; site.addsitedir("/usr/local/lib/python2.7/site-packages")' >>
     
 For Python 3.5
 
-```
+```bash
 mkdir -p /Users/boyuan/Library/Python/2.7/lib/python/site-packages
 echo 'import site; site.addsitedir("/usr/local/lib/python3.5/site-packages")' >> 
     /Users/boyuan/Library/Python/3.5/lib/python/site-packages/homebrew.pth
@@ -34,7 +34,7 @@ sudo apt-get install python-qt4
 or
 
 ```bash
-  $ sudo pip install python-qt4
+sudo pip install python-qt4
 ```
 
 You can also get a wheel file for pip installation at: http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4
