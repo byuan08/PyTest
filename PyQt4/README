@@ -4,6 +4,11 @@
 brew install pyqt --with-python3
 
 ```
+```
+function test() {
+  console.log("notice the blank line before this function?");
+}
+```
 # sip will be automatically installed as dependency
 #
 # Python modules have been installed and Homebrew's site-packages is not
