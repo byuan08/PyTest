@@ -13,7 +13,7 @@ help [command]
 
 Within a python file, to begin the debugger at this line when the file is run normally
 
-```
+```python
 importpdb
 ...
 pdb.set_trace()
@@ -41,13 +41,25 @@ Execute until the current function’s return is encountered
 ```
 r(eturn) 
 ```
+Print a stack trace, with the most recent frame at the bottom. An arrow indicates the current frame, which determines the context of most commands
+```
+w(where)
+```
+Move the current frame one level up in the stack trace (to an older frame)
+```
+u(up)
+```
+Move the current frame one level down in the stack trace (to a newer frame).
+```
+d(down)
+```
 Create a breakpoint at line [#]
 ```
-b [#]
+b(reak) [#]
 ```
 List breakpoints and their indices
 ```
-b
+b(break)
 ```
 Execute until a breakpoint is encountered
 ```
