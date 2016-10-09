@@ -14,7 +14,7 @@ help [command]
 Within a python file, to begin the debugger at this line when the file is run normally
 
 ```python
-importpdb
+import pdb
 ...
 pdb.set_trace()
 ```
